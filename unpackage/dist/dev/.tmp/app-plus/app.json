@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/tabBar/home",
+    "pages/tabBar/category",
+    "pages/tabBar/cart",
+    "pages/tabBar/user",
+    "pages/goods/goods-list",
+    "pages/goods/zffw",
+    "pages/goods/goods",
+    "pages/login/register",
+    "pages/login/resetpasswd",
+    "pages/order/confirmation",
+    "pages/user/order_list/order_list",
+    "pages/user/setting/setting",
+    "pages/user/myQR/myQR",
+    "pages/msg/msg",
+    "pages/msg/chat/chat"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#ffffff",
+    "backgroundColorTop": "#ffffff",
+    "backgroundColorBottom": "#ffffff"
+  },
+  "usingComponents": {},
+  "tabBar": {
+    "color": "#333333",
+    "selectedColor": "#f06c7a",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": []
+  },
+  "splashscreen": {
+    "alwaysShowBeforeRender": true,
+    "autoclose": false
+  },
+  "appname": "园服大师",
+  "compilerVersion": "1.9.3"
+}

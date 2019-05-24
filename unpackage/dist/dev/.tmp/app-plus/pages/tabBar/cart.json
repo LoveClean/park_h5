@@ -1,0 +1,7 @@
+{
+  "usingComponents": {},
+  "enablePullDownRefresh": true,
+  "navigationBarTextStyle": "black",
+  "titleNView": false,
+  "softinputNavBar": "none"
+}
