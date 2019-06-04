@@ -269,6 +269,8 @@ export default {
 				wx.ready(() => {
 					wx.onMenuShareAppMessage(config);
 					wx.onMenuShareTimeline(config);
+					// wx.updateAppMessageShareData(config);
+					// wx.updateTimelineShareData(config);
 				});
 				wx.error(function(res) {
 					console.log('wx err', res);

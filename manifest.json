@@ -6,7 +6,7 @@
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
-        "usingComponents": true,
+        "usingComponents" : true,
         /* 5+App特有相关 */
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
@@ -67,6 +67,6 @@
     },
     "h5" : {
         "title" : "园服大师",
-        "domain" : "http://yf.179mall.cn"
+        "domain" : "http://www.yuanfudashi.com/"
     }
 }

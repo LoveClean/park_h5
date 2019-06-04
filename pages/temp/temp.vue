@@ -108,20 +108,19 @@ export default {
 			orderby: 'sheng'
 		};
 	},
-	onLoad: function(option) {
+	onLoad(option) {
 		//option为object类型，会序列化上个页面传递的参数
 		uni.request({
-			url: 'http://122.112.225.34:8090/park/selectByPrimaryKey',
+			url: this.$tempUrl + 'park/selectByPrimaryKey',
 			data: { id: option.parkId },
 			method: 'GET',
 			success: res => {
-				const data = res.data.data;
-				this.park = data;
+				this.park = res.data.data;
 				this.orderbyList[0].text = this.park.name;
 			}
 		});
 		uni.request({
-			url: 'http://122.112.225.34:8090/public/listHouse',
+			url: this.$tempUrl + 'public/listHouse',
 			data: {
 				parkId: option.parkId,
 				pageNum: '1',
@@ -148,15 +147,11 @@ export default {
 		}, 1);
 		// #endif
 		//////////////////////////微信分享////////////////
-		let that = this;
 		var wx = require('jweixin-module');
 		// 获取签名
-		uni.request({
-			url: 'http://122.112.225.34:8090/wechat/config',
+		let getConfig = uni.request({
+			url: this.$tempUrl + '/wechat/config',
 			method: 'GET',
-			data: {
-				url: 'http://' + window.location.host + '/'
-			},
 			success: res => {
 				wx.config({
 					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -166,28 +161,27 @@ export default {
 					signature: res.data.signature, // 必填，签名
 					jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 必填，需要使用的JS接口列表
 				});
-
-				wx.ready(function() {
-					wx.onMenuShareAppMessage({
-						title: '租房列表',
-						desc: '租房列表',
-						link: 'http://yf.179mall.cn:8082/#/pages/temp/temp?parkId=' + option.parkId + '&name=' + option.name,
-						imgUrl: 'http://yf.179mall.cn:8082/static/img/temp/zffw.png',
-						success: function() {
-							console.log('已分享');
-						}
-					});
-
-					wx.onMenuShareTimeline({
-						title: '租房列表', // 分享标题
-						link: 'http://yf.179mall.cn:8082/#/pages/temp/temp?parkId=' + option.parkId + '&name=' + option.name,
-						// link: that.shareURL, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-						imgUrl: 'http://yf.179mall.cn:8082/static/img/temp/zffw.png', // 分享图标
-						success: function() {
-							// 用户点击了分享后执行的回调函数
-						}
-					});
+		
+				// 此部分为微信分享
+				let config = {
+					title: this.park.name + '空间火热出租中', // 分享标题
+					desc: this.park.introduction, // 分享描述
+					link: 'http://www.yuanfudashi.com:80/#/pages/temp/temp?parkId=' + option.parkId + '&name=' + option.name, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: this.park.logo,
+					success: function() {
+						console.log('已分享');
+						console.log(success); // 用户点击了分享后执行的回调函数
+					},
+					cancel: function() {
+						console.log(failf);
+					}
+				};
+		
+				wx.ready(() => {
+					wx.onMenuShareAppMessage(config);
+					wx.onMenuShareTimeline(config);
 				});
+		
 				wx.error(function(res) {
 					console.log('wx err', res);
 					//可以更新签名

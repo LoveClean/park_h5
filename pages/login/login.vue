@@ -49,7 +49,6 @@ export default {
 			isShowOauth: false
 		};
 	},
-	onShow() {},
 	// beforeCreate() {
 	// 	const s = document.createElement('script');
 	// 	s.type = 'text/javascript';
@@ -57,7 +56,7 @@ export default {
 	// 	document.body.appendChild(s);
 	// 	const wx = document.createElement('script');
 	// 	wx.type = 'text/javascript';
-	// 	wx.src = 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js';
+	// 	wx.src = 'http://res2.wx.qq.com/open/js/jweixin-1.4.0.js';
 	// 	document.body.appendChild(wx);
 	// },
 	onLoad() {
