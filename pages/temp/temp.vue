@@ -27,7 +27,7 @@
 		<!-- 占位 -->
 		<view class="place"></view>
 		<!-- 商品列表 -->
-		<view class="goods-list">
+		<view class="goods-list" v-if="goodsList.length > 0">
 			<view class="product-list">
 				<!-- <view class="product" v-for="goods in goodsList" :key="goods.houseId" @tap="toGoods(goods)"> -->
 				<view class="product" v-for="goods in goodsList" :key="goods.houseId">
@@ -94,37 +94,7 @@ export default {
 				updateDate: '2019-04-26 20:37:44',
 				status: 1
 			},
-			goodsList: [
-				{
-					houseId: 6,
-					parkId: 15,
-					cover: 'http://obs-312.obs.cn-east-2.myhuaweicloud.com/2019042610e686dae0.jpg',
-					contact: '18205812926',
-					location: '1幢325',
-					acreage: 40,
-					floor: 3,
-					orientation: 5,
-					finish: 1,
-					elevator: 2,
-					tenancyTerm: 5,
-					registeredCompany: 2,
-					usageRate: 0.75,
-					unitPrice: 13,
-					price: 5000,
-					serviceCharge: 12,
-					cashPledge: 2000,
-					propertyFee: 20,
-					label: null,
-					introduction: '没窗户，安静',
-					remark: '两室两厅两卫',
-					createBy: '黄鹏飞',
-					createDate: '2019-04-26 10:54:28',
-					updateBy: '黄鹏飞',
-					updateDate: '2019-04-26 10:54:28',
-					status: 0,
-					pictureList: [{ id: 4, picture: '../../static/img/temp/1.jpg', houseId: 6 }]
-				}
-			],
+			goodsList: [],
 			//轮播图下标
 			currentSwiper: 0,
 			loadingText: '正在加载...',

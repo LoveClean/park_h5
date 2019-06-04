@@ -59,7 +59,7 @@ export default {
 		//option为object类型，会序列化上个页面传递的参数
 		console.log(option.informationId); //打印出上个页面传递的参数。
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + 'public/selectInformation',
+			url: this.$tempUrl + 'public/selectInformation',
 			data: {
 				informationId: option.informationId
 			},

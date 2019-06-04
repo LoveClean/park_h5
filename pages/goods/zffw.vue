@@ -9,7 +9,7 @@
 		<!-- 占位 -->
 		<view class="place"></view>
 		<!-- 租房列表 -->
-		<view class="goods-list">
+		<view class="goods-list" v-if="goodsList.length > 0">
 			<view class="product-list">
 				<!-- <view class="product" v-for="goods in goodsList" :key="goods.houseId" @tap="toGoods(goods)"> -->
 				<view class="product" v-for="goods in goodsList" :key="goods.houseId">
@@ -76,37 +76,7 @@ export default {
 				updateDate: '2019-04-26 20:37:44',
 				status: 1
 			},
-			goodsList: [
-				{
-					houseId: 6,
-					parkId: 15,
-					cover: 'http://obs-312.obs.cn-east-2.myhuaweicloud.com/2019042610e686dae0.jpg',
-					contact: '18205812926',
-					location: '1幢325',
-					acreage: 40,
-					floor: 3,
-					orientation: '南',
-					finish: '精装',
-					elevator: '有电梯',
-					tenancyTerm: '一年',
-					registeredCompany: '是',
-					usageRate: 0.75,
-					unitPrice: 13,
-					price: 5000,
-					serviceCharge: 12,
-					cashPledge: 2000,
-					propertyFee: 20,
-					label: null,
-					introduction: '没窗户，安静',
-					remark: '两室两厅两卫',
-					createBy: '黄鹏飞',
-					createDate: '2019-04-26 10:54:28',
-					updateBy: '黄鹏飞',
-					updateDate: '2019-04-26 10:54:28',
-					status: 0,
-					pictureList: [{ id: 4, picture: '../../static/img/temp/1.jpg', houseId: 6 }]
-				}
-			],
+			goodsList: [],
 			//轮播图下标
 			currentSwiper: 0,
 			loadingText: '正在加载...',
@@ -120,11 +90,11 @@ export default {
 			orderby: 'sheng'
 		};
 	},
-	onLoad: function(option) {
+	onLoad(option) {
 		this.park = uni.getStorageSync('park');
 		//option为object类型，会序列化上个页面传递的参数
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + 'public/listHouse',
+			url: this.$tempUrl + 'public/listHouse',
 			data: {
 				parkId: option.parkId,
 				pageNum: '1',
@@ -151,15 +121,11 @@ export default {
 		}, 1);
 		// #endif
 		//////////////////////////微信分享////////////////
-		const that = this;
 		var wx = require('jweixin-module');
 		// 获取签名
-		uni.request({
-			url: uni.getStorageSync('tempUrl') + '/wechat/config',
+		let getConfig = uni.request({
+			url: this.$tempUrl + '/wechat/config',
 			method: 'GET',
-			data: {
-				url: 'http://' + window.location.host + '/'
-			},
 			success: res => {
 				wx.config({
 					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -170,27 +136,26 @@ export default {
 					jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 必填，需要使用的JS接口列表
 				});
 
-				wx.ready(function() {
-					wx.onMenuShareAppMessage({
-						title: that.park.name + '空间火热出租中',
-						desc: that.park.introduction,
-						link: 'http://yf.179mall.cn:8083/#/pages/temp/temp?parkId=' + option.parkId + '&name=' + option.name,
-						imgUrl: that.park.logo,
-						success: function() {
-							console.log('已分享');
-						}
-					});
+				// 此部分为微信分享
+				let config = {
+					title: this.park.name + '空间火热出租中', // 分享标题
+					desc: this.park.introduction, // 分享描述
+					link: 'http://www.yuanfudashi.com:80/#/pages/temp/temp?parkId=' + option.parkId + '&name=' + option.name, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: this.park.logo,
+					success: function() {
+						console.log('已分享');
+						console.log(success); // 用户点击了分享后执行的回调函数
+					},
+					cancel: function() {
+						console.log(failf);
+					}
+				};
 
-					wx.onMenuShareTimeline({
-						title: that.park.name + '空间火热出租中', // 分享标题
-						link: 'http://yf.179mall.cn:8083/#/pages/temp/temp?parkId=' + option.parkId + '&name=' + option.name,
-						// link: that.shareURL, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-						imgUrl: that.park.logo, // 分享图标
-						success: function() {
-							// 用户点击了分享后执行的回调函数
-						}
-					});
+				wx.ready(() => {
+					wx.onMenuShareAppMessage(config);
+					wx.onMenuShareTimeline(config);
 				});
+
 				wx.error(function(res) {
 					console.log('wx err', res);
 					//可以更新签名

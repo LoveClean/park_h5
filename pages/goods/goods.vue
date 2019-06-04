@@ -163,7 +163,7 @@
 			</view>
 		</view> -->
 		<!-- 详情 -->
-		<view class="description">
+		<view class="description" v-if="goodsData.content != null">
 			<!-- <view class="title">———— 图文详情 ————</view> -->
 			<view class="content"><rich-text :nodes="goodsData.content"></rich-text></view>
 		</view>
@@ -226,7 +226,7 @@ export default {
 	onLoad(option) {
 		console.log(option);
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + 'app/selectByPrimaryKeyForDetail',
+			url: this.$tempUrl + 'app/selectByPrimaryKeyForDetail',
 			data: {
 				appId: option.appId,
 				parkId: option.parkId

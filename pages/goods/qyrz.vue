@@ -8,8 +8,8 @@
 		</view>
 		<!-- 占位 -->
 		<view class="place"></view>
-		<!-- 商品列表 -->
-		<view class="goods-list">
+		<!-- 企业列表 -->
+		<view class="goods-list" v-show="goodsList.length > 0">
 			<view class="product-list">
 				<!-- <view class="product" v-for="goods in goodsList" :key="goods.houseId" @tap="toGoods(goods)"> -->
 				<view class="product" v-for="goods in goodsList" :key="goods.houseId">
@@ -43,24 +43,7 @@
 export default {
 	data() {
 		return {
-			goodsList: [
-				{
-					id: 7,
-					parkId: 15,
-					name: '破壳科技',
-					legalPerson: '薛松',
-					cover: 'http://obs-312.obs.cn-east-2.myhuaweicloud.com/2019050612f02c56f6.jpg',
-					contact: '13333333333',
-					location: '2幢312',
-					beginDate: '2019-04-28 00:00:00',
-					duration: 35,
-					createBy: '黄鹏飞',
-					createDate: '2019-04-26 10:54:28',
-					updateBy: '黄鹏飞',
-					updateDate: '2019-04-26 10:54:28',
-					status: 1
-				}
-			],
+			goodsList: [],
 			//轮播图下标
 			currentSwiper: 0,
 			loadingText: '正在加载...',
@@ -74,10 +57,10 @@ export default {
 			orderby: 'sheng'
 		};
 	},
-	onLoad: function(option) {
+	onLoad(option) {
 		//option为object类型，会序列化上个页面传递的参数
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + 'public/listEnterprise',
+			url: this.$tempUrl + 'public/listEnterprise',
 			data: {
 				parkId: option.parkId,
 				pageNum: '1',

@@ -22,53 +22,6 @@
 				<!-- <view class="kjczlb">空间出租列表如下：</view> -->
 			</view>
 		</view>
-		<!-- 占位 -->
-		<view class="place"></view>
-			<view class="product-list">
-				<!-- <view class="product" v-for="goods in goodsList" :key="goods.houseId" @tap="toGoods(goods)"> -->
-				<view class="product" v-for="goods in goodsList" :key="goods.houseId">
-					<!-- 轮播图 -->
-					<view class="swiper-box">
-						<swiper circular="true" autoplay="true" @change="swiperChange">
-							<!-- <swiper-item v-for="swiper in goods.pictureList" :key="swiper.id"><image :src="swiper.picture" @tap="toSwiper(swiper)"></image></swiper-item> -->
-							<swiper-item v-for="swiper in goods.pictureList" :key="swiper.id"><image :src="swiper.picture"></image></swiper-item>
-						</swiper>
-						<view class="indicator">{{ currentSwiper + 1 }}/{{ goods.pictureList.length }}</view>
-					</view>
-					<!-- <image mode="widthFix" :src="goods.img"></image> -->
-					<view class="name">{{ goods.introduction }}</view>
-					<view class="info">
-						<view class="slogan">位置：</view>
-						<view class="slogan">面积：</view>
-						<view class="slogan">房型：</view>
-						<view class="slogan">装修：</view>
-					</view>
-					<view class="info">
-						<view class="price">{{ goods.location }}</view>
-						<view class="price">{{ goods.acreage }}m²</view>
-						<view class="price">{{ goods.remark }}</view>
-						<view class="price">{{ goods.finish }}</view>
-					</view>
-					<view class="info">
-						<view class="slogan">租金：</view>
-						<view class="slogan">押金：</view>
-						<view class="slogan">起租期：</view>
-						<view class="slogan">物业费：</view>
-					</view>
-					<view class="info">
-						<view class="price">{{ goods.price }}/月</view>
-						<view class="price">{{ goods.cashPledge }}元</view>
-						<view class="price">{{ goods.tenancyTerm }}</view>
-						<view class="price">{{ goods.propertyFee }}元/m²</view>
-					</view>
-					<!-- <view class="info">
-						<view class="slogan"></view>
-						<view class="slogan">联系方式:{{ goods.contact }}</view>
-					</view> -->
-				</view>
-			</view>
-			<!-- <view class="loading-text">{{ loadingText }}</view> -->
-		</view>
 	</view>
 </template>
 
@@ -103,10 +56,10 @@ export default {
 			orderby: 'sheng'
 		};
 	},
-	onLoad: function(option) {
+	onLoad(option) {
 		//option为object类型，会序列化上个页面传递的参数
 		uni.request({
-			url: 'http://122.112.225.34:8090/park/selectByPrimaryKey',
+			url: this.$tempUrl + 'park/selectByPrimaryKey',
 			data: { id: option.parkId },
 			method: 'GET',
 			success: res => {

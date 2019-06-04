@@ -50,24 +50,24 @@ export default {
 		};
 	},
 	onShow() {},
-	beforeCreate() {
-		const s = document.createElement('script');
-		s.type = 'text/javascript';
-		s.src = 'http://pv.sohu.com/cityjson?ie=utf-8';
-		document.body.appendChild(s);
-	},
+	// beforeCreate() {
+	// 	const s = document.createElement('script');
+	// 	s.type = 'text/javascript';
+	// 	s.src = 'http://pv.sohu.com/cityjson?ie=utf-8';
+	// 	document.body.appendChild(s);
+	// 	const wx = document.createElement('script');
+	// 	wx.type = 'text/javascript';
+	// 	wx.src = 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js';
+	// 	document.body.appendChild(wx);
+	// },
 	onLoad() {
-		const that = this;
 		// uni.showToast({ title: '请确认已开启定位服务', icon: 'none' });
-		/////////////////////////////////
-		var wx = require('jweixin-module');
+		////////////////wechat/////////////////
+		const wx = require('jweixin-module');
 		// 获取签名
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + '/wechat/config',
+			url: this.$tempUrl + '/wechat/config',
 			method: 'GET',
-			data: {
-				url: 'http://' + window.location.host + '/'
-			},
 			success: res => {
 				wx.config({
 					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -77,42 +77,40 @@ export default {
 					signature: res.data.signature, // 必填，签名
 					jsApiList: ['getLocation'] // 必填，需要使用的JS接口列表
 				});
-				wx.ready(function() {
+				wx.ready(() => {
 					wx.getLocation({
 						type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-						success: function(res) {
+						success: res => {
 							var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
 							var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
 							console.log(res);
 							uni.request({
-								url: uni.getStorageSync('tempUrl') + 'common/geocoderByLocation',
+								url: this.$tempUrl + 'common/geocoderByLocation',
 								data: { lat: latitude, lng: longitude },
 								method: 'GET',
 								success: res => {
-									console.log(res);
-									const data = res.data.result;
-									console.log('当前位置的区域code：' + data.ad_info.adcode);
+									// console.log(res);
+									const result = res.data.result;
+									console.log('当前位置的区域code：' + result.ad_info.adcode);
 									uni.request({
-										url: uni.getStorageSync('tempUrl') + 'park/selectListByLocation',
-										data: { location: data.ad_info.adcode, pageNum: '1', pageSize: '99' },
+										url: this.$tempUrl + 'park/selectListByLocation',
+										data: { location: result.ad_info.adcode, pageNum: '1', pageSize: '99' },
 										method: 'GET',
 										success: res => {
 											const content = res.data.content;
-											console.log(content);
-											console.log(content.length);
+											// console.log(content);
+											// console.log(content.length);
 											if (content.length === 0) {
 												uni.request({
-													url: uni.getStorageSync('tempUrl') + 'park/selectList',
+													url: this.$tempUrl + 'park/selectList',
 													data: { pageNum: '1', pageSize: '99' },
 													method: 'GET',
 													success: res => {
-														const data = res.data.content;
-														console.log(data);
-														that.array = data;
+														this.array = res.data.content;
 													}
 												});
 											} else {
-												that.array = content;
+												this.array = content;
 											}
 										}
 									});
@@ -121,16 +119,14 @@ export default {
 						}
 					});
 				});
-				wx.error(function(res) {
+				wx.error(res => {
 					console.log('wx err', res);
 					uni.request({
-						url: uni.getStorageSync('tempUrl') + 'park/selectList',
+						url: this.$tempUrl + 'park/selectList',
 						data: { pageNum: '1', pageSize: '99' },
 						method: 'GET',
 						success: res => {
-							const data = res.data.content;
-							console.log(data);
-							that.array = data;
+							this.array = res.data.content;
 						}
 					});
 				});
@@ -150,12 +146,12 @@ export default {
 					uni.showToast({ title: '您还未选择园区', icon: 'none' });
 				} else {
 					uni.request({
-						url: uni.getStorageSync('tempUrl') + 'app/selectListByParkId',
+						url: this.$tempUrl + 'app/selectListByParkId',
 						data: { parkId: this.array[this.index].id, pageNum: '1', pageSize: '99' },
 						method: 'GET',
 						success: res => {
-							const data = res.data.content;
-							console.log(data);
+							// const data = res.data.content;
+							// console.log(data);
 							uni.hideLoading();
 							uni.setStorageSync('park', this.array[this.index]);
 							uni.showToast({ title: '登录成功', icon: 'success' });

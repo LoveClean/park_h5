@@ -23,7 +23,7 @@
 		<!-- 占位 -->
 		<view class="place"></view>
 		<!-- 轮播图 -->
-		<view class="swiper" v-show="swiperList.length > 0">
+		<view class="swiper" v-if="swiperList.length > 0">
 			<view class="swiper-box">
 				<swiper circular="true" autoplay="true" @change="swiperChange">
 					<swiper-item v-for="swiper in swiperList" :key="swiper.id"><image :src="swiper.picture" @tap="toSwiper(swiper)"></image></swiper-item>
@@ -32,7 +32,7 @@
 			</view>
 		</view>
 		<!-- 分类列表 -->
-		<view class="category-list">
+		<view class="category-list" v-if="categoryList.length > 0">
 			<view class="category" v-for="(row, index) in categoryList" :key="index" @tap="toCategory(row)">
 				<view class="img"><image :src="row.icon"></image></view>
 				<view class="text">{{ row.name }}</view>
@@ -64,7 +64,7 @@
 			</view>
 		</view> -->
 		<!-- 商品列表 -->
-		<view class="goods-list" v-show="productList.length > 0">
+		<view class="goods-list" v-if="productList.length > 0">
 			<view class="title">
 				<image src="../../static/img/hua.png"></image>
 				猜你喜欢
@@ -121,7 +121,7 @@ export default {
 			// 轮播图片
 			swiperList: [],
 			// 分类菜单
-			categoryList: [{ id: 1, name: '办公', img: '../../static/img/category/1.png' }, { id: 2, name: '家电', img: '../../static/img/category/2.png' }],
+			categoryList: [],
 			Promotion: [],
 			//猜你喜欢列表
 			productList: [],
@@ -159,12 +159,12 @@ export default {
 	},
 	onLoad(option) {
 		// uni.setStorageSync('tempUrl', 'http://localhost:8090/');
-		uni.setStorageSync('tempUrl', 'http://122.112.225.34:8090/');
+		// uni.setStorageSync('tempUrl', 'http://122.112.225.34:8090/');
 		////////////***********************************************************************////////////
 		if (option.parkId !== undefined) {
 			this.park.id = option.parkId;
 			uni.request({
-				url: uni.getStorageSync('tempUrl') + 'park/selectByPrimaryKey',
+				url: this.$tempUrl + 'park/selectByPrimaryKey',
 				data: { id: option.parkId },
 				method: 'GET',
 				success: res => {
@@ -193,7 +193,7 @@ export default {
 		}
 		//轮播图
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + 'public/listSlideshow',
+			url: this.$tempUrl + 'public/listSlideshow',
 			data: {
 				parkId: this.park.id,
 				pageNum: '1',
@@ -206,7 +206,7 @@ export default {
 		});
 		//分类菜单
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + 'app/selectListByParkId',
+			url: this.$tempUrl + 'app/selectListByParkId',
 			data: {
 				parkId: this.park.id,
 				pageNum: '1',
@@ -219,7 +219,7 @@ export default {
 		});
 		//猜你喜欢
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + 'public/listHouse',
+			url: this.$tempUrl + 'public/listHouse',
 			data: {
 				parkId: this.park.id,
 				pageNum: '1',
@@ -238,15 +238,11 @@ export default {
 		//加载活动专区
 		this.loadPromotion();
 		//////////////////////////微信服务////////////////
-		const that = this;
 		var wx = require('jweixin-module');
 		// 获取签名
 		uni.request({
-			url: uni.getStorageSync('tempUrl') + '/wechat/config',
+			url: this.$tempUrl + '/wechat/config',
 			method: 'GET',
-			data: {
-				url: 'http://' + window.location.host + '/'
-			},
 			success: res => {
 				wx.config({
 					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -256,28 +252,23 @@ export default {
 					signature: res.data.signature, // 必填，签名
 					jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 必填，需要使用的JS接口列表
 				});
-
-				wx.ready(function() {
-					wx.onMenuShareAppMessage({
-						title: that.park.name,
-						desc: that.park.introduction,
-						link: 'http://yf.179mall.cn:8083/#/pages/tabBar/home?parkId=' + that.park.id,
-						imgUrl: that.park.logo,
-						success: function() {
-							console.log('已分享');
-						}
-					});
-
-					wx.onMenuShareTimeline({
-						title: that.park.name, // 分享标题
-						link: 'http://yf.179mall.cn:8083/#/pages/tabBar/home?parkId=' + that.park.id,
-						// link: that.shareURL, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-						imgUrl: that.park.logo, // 分享图标
-						success: function() {
-							console.log('已分享');
-							// 用户点击了分享后执行的回调函数
-						}
-					});
+				// 此部分为微信分享
+				let config = {
+					title: this.park.name, // 分享标题
+					desc: this.park.introduction, // 分享描述
+					link: 'http://www.yuanfudashi.com:80/#/pages/tabBar/home?parkId=' + this.park.id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: this.park.logo,
+					success: function() {
+						console.log('已分享');
+						console.log(success); // 用户点击了分享后执行的回调函数
+					},
+					cancel: function() {
+						console.log(failf);
+					}
+				};
+				wx.ready(() => {
+					wx.onMenuShareAppMessage(config);
+					wx.onMenuShareTimeline(config);
 				});
 				wx.error(function(res) {
 					console.log('wx err', res);
@@ -393,6 +384,10 @@ export default {
 			} else if (e.name === '入驻企业') {
 				uni.navigateTo({
 					url: '../goods/qyrz?parkId=' + this.park.id + '&name=' + e.name
+				});
+			} else if (e.name === '宽带电话') {
+				uni.navigateTo({
+					url: '../goods/kddh?parkId=' + this.park.id + '&name=' + e.name
 				});
 			} else {
 				uni.navigateTo({

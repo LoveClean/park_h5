@@ -14,5 +14,5 @@
 
 <style>
 	/*每个页面公共css */
-@import url('/components/un-parse/u-parse.css');
+/* @import url('/components/un-parse/u-parse.css'); */
 </style>
