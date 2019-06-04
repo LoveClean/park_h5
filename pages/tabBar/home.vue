@@ -256,7 +256,8 @@ export default {
 				let config = {
 					title: this.park.name, // 分享标题
 					desc: this.park.introduction, // 分享描述
-					link: 'http://www.yuanfudashi.com:80/#/pages/tabBar/home?parkId=' + this.park.id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					//link: 'http://www.yuanfudashi.com:80/#/pages/tabBar/home?parkId=' + this.park.id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					link: 'http://www.yuanfudashi.com/share.html?parkId=' + this.park.id, 
 					imgUrl: this.park.logo,
 					success: function() {
 						console.log('已分享');

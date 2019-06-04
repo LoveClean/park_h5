@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+	</head>
+	<body>
+		<script>
+			let parkId = getQueryString("parkId");
+			let name = getQueryString("name");
+
+			if (parkId && name) {
+				// 跳转到租房
+			} else if (parkId) {
+				// 跳转到园区
+				window.location.replace("http://www.yuanfudashi.com/#/pages/tabBar/home?parkId=" + parkId)
+			} else {
+				// 跳转到首页
+			}
+
+			function getQueryString(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+				var r = window.location.search.substr(1).match(reg);
+				if (r != null) return unescape(r[2]);
+				return null;
+			}
+			//window.location.href = "http://localhost/#/pages/home/home"
+		</script>
+	</body>
+</html>

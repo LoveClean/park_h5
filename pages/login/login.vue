@@ -82,7 +82,7 @@ export default {
 						success: res => {
 							var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
 							var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-							console.log(res);
+							//console.log(res);
 							uni.request({
 								url: this.$tempUrl + 'common/geocoderByLocation',
 								data: { lat: latitude, lng: longitude },
