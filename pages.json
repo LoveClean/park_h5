@@ -70,7 +70,7 @@
 		,{
 			"path": "pages/temp/temp",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "空间出租",
 				"enablePullDownRefresh": true
 			}
 		},

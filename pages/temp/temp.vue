@@ -116,6 +116,7 @@ export default {
 			method: 'GET',
 			success: res => {
 				this.park = res.data.data;
+				this.wxfw();
 				this.orderbyList[0].text = this.park.name;
 			}
 		});
@@ -131,9 +132,6 @@ export default {
 				this.goodsList = res.data.content;
 			}
 		});
-		uni.setNavigationBarTitle({
-			title: option.name
-		});
 
 		//兼容H5下排序栏位置
 		// #ifdef H5
@@ -146,48 +144,6 @@ export default {
 			}
 		}, 1);
 		// #endif
-		//////////////////////////微信分享////////////////
-		var wx = require('jweixin-module');
-		// 获取签名
-		let getConfig = uni.request({
-			url: this.$tempUrl + '/wechat/config',
-			method: 'GET',
-			success: res => {
-				wx.config({
-					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-					appId: res.data.appId, // 必填，公众号的唯一标识
-					timestamp: res.data.timestamp, // 必填，生成签名的时间戳
-					nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
-					signature: res.data.signature, // 必填，签名
-					jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 必填，需要使用的JS接口列表
-				});
-		
-				// 此部分为微信分享
-				let config = {
-					title: this.park.name + '空间火热出租中', // 分享标题
-					desc: this.park.introduction, // 分享描述
-					link: 'http://www.yuanfudashi.com:80/#/pages/temp/temp?parkId=' + option.parkId + '&name=' + option.name, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-					imgUrl: this.park.logo,
-					success: function() {
-						console.log('已分享');
-						console.log(success); // 用户点击了分享后执行的回调函数
-					},
-					cancel: function() {
-						console.log(failf);
-					}
-				};
-		
-				wx.ready(() => {
-					wx.onMenuShareAppMessage(config);
-					wx.onMenuShareTimeline(config);
-				});
-		
-				wx.error(function(res) {
-					console.log('wx err', res);
-					//可以更新签名
-				});
-			}
-		});
 	},
 	onPageScroll(e) {
 		//兼容iOS端下拉时顶部漂移
@@ -229,6 +185,47 @@ export default {
 	// 	}
 	// },
 	methods: {
+		wxfw() {
+			var wx = require('jweixin-module');
+			// 获取签名
+			uni.request({
+				url: this.$tempUrl + '/wechat/config',
+				method: 'GET',
+				success: res => {
+					wx.config({
+						debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+						appId: res.data.appId, // 必填，公众号的唯一标识
+						timestamp: res.data.timestamp, // 必填，生成签名的时间戳
+						nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
+						signature: res.data.signature, // 必填，签名
+						jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 必填，需要使用的JS接口列表
+					});
+					// 此部分为微信分享
+					let config = {
+						title: this.park.name + '空间火热出租中', // 分享标题
+						desc: this.park.introduction, // 分享描述
+						// link: 'http://www.yuanfudashi.com:80/#/pages/temp/temp?parkId=' + this.park.parkId + '&name=' + this.park.name, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+						link: 'http://www.yuanfudashi.com/share.html?parkId=' + this.park.id + '&type=zffw',
+						imgUrl: this.park.logo,
+						success: function() {
+							console.log('已分享');
+							console.log(success); // 用户点击了分享后执行的回调函数
+						},
+						cancel: function() {
+							console.log(failf);
+						}
+					};
+					wx.ready(() => {
+						wx.onMenuShareAppMessage(config);
+						wx.onMenuShareTimeline(config);
+					});
+					wx.error(function(res) {
+						console.log('wx err', res);
+						//可以更新签名
+					});
+				}
+			});
+		},
 		//轮播图指示器
 		swiperChange(event) {
 			this.currentSwiper = event.detail.current;
